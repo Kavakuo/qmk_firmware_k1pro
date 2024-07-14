@@ -16,6 +16,8 @@
 
 #pragma once
 
+#define OS_DETECTION_KEYBOARD_RESET
+
 #ifdef RGB_MATRIX_ENABLE
 /* RGB Matrix Driver Configuration */
 #    define DRIVER_COUNT 2

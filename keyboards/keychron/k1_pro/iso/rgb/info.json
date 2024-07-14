@@ -3,6 +3,9 @@
         "pid": "0x0211",
         "device_version": "1.0.2"
     },
+    "dynamic_keymap": {
+      "layer_count": 16
+    },
     "features": {
         "rgb_matrix": true
     },
