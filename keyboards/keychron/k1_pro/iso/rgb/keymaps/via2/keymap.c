@@ -14,14 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include QMK_KEYBOARD_H
 #include "action_layer.h"
-
 #include "rgb_matrix.h"
-#include "keycodes.h"
 #include "layers.h"
 #include "utils.h"
-#include QMK_KEYBOARD_H
 #include "quantum_keycodes.h"
+#include "custom_keycodes.h"
+
 
 bool printDebug = false;
 static bool readyForReset = false;

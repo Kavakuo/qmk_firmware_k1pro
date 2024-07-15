@@ -1,5 +1,8 @@
 
-#include "keycodes.h"
+#include "custom_keycodes.h"
+#include "action.h"
+#include "action_layer.h"
+#include "quantum.h"
 #include "utils.h"
 #include "layers.h"
 
