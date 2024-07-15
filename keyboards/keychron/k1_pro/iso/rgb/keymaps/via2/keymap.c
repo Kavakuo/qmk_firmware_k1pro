@@ -22,6 +22,19 @@
 #include QMK_KEYBOARD_H
 
 
+#define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
+#define BYTE_TO_BINARY(byte)  \
+  ((byte) & 0x80 ? '1' : '0'), \
+  ((byte) & 0x40 ? '1' : '0'), \
+  ((byte) & 0x20 ? '1' : '0'), \
+  ((byte) & 0x10 ? '1' : '0'), \
+  ((byte) & 0x08 ? '1' : '0'), \
+  ((byte) & 0x04 ? '1' : '0'), \
+  ((byte) & 0x02 ? '1' : '0'), \
+  ((byte) & 0x01 ? '1' : '0') 
+
+static bool printDebug = false;
+
 enum layers {
     MAC_BASE,
     MAC_FN,
@@ -65,6 +78,11 @@ const key_override_t **key_overrides = (const key_override_t *[]){
 };
 
 
+void printBinary(uint16_t m) {
+    printf(BYTE_TO_BINARY_PATTERN" "BYTE_TO_BINARY_PATTERN"\n", BYTE_TO_BINARY(m>>8), BYTE_TO_BINARY(m));
+}
+
+
 void keyboard_post_init_user(void) {
     // Customise these values to desired behaviour
 #ifdef CONSOLE_ENABLE
@@ -82,6 +100,8 @@ enum customKeys {
     CKC_MOFN,
     CKC_HARD_RESET,
     CKC_SOFT_RESET
+    CKC_SOFT_RESET,
+    CKC_DEBUG
 };
 
 static bool readyForReset = false;
@@ -168,6 +188,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 soft_reset_keyboard();
             }
             return false;
+        case CKC_DEBUG:
+            if (record->event.pressed) {
+                DEBUG_LOG("CKC_DEBUG pressed\n");
+                printDebug = !printDebug;
+            }
         default:
             return true; // Process all other keycodes normally
     }
@@ -250,6 +275,26 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     }
     return false;
 }
+
+#ifdef CONSOLE_ENABLE
+static uint16_t key_timer;
+void matrix_scan_user() {
+    if (!key_timer) {
+        key_timer = timer_read();
+    }
+    
+
+    if (printDebug && timer_elapsed(key_timer) > 500) {
+        printf("        layer_state "); printBinary(layer_state);
+        printf("default_layer_state "); printBinary(default_layer_state);
+
+        printf("highest layer_state %2u\n", get_highest_layer(layer_state));
+        printf("hst def_layer_state %2u\n", get_highest_layer(default_layer_state));
+        printf("----\n");
+        key_timer = timer_read();
+    }
+}
+#endif
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
