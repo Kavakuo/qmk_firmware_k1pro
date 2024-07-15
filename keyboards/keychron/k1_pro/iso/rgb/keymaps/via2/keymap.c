@@ -97,9 +97,9 @@ enum customKeys {
     // Momentarily turn off highest layer
     CKC_MOF_HL = NEW_SAFE_RANGE,
     CKC_MOF_ALL,
+    CKC_TF_ALL,
     CKC_MOFN,
     CKC_HARD_RESET,
-    CKC_SOFT_RESET
     CKC_SOFT_RESET,
     CKC_DEBUG
 };
@@ -163,6 +163,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             } else {
                 DEBUG_LOG("CKC_MOF_ALL released\n");
                 layer_state_set(cached_layer_state);
+            }
+            return false;
+        case CKC_TF_ALL:
+            if (record->event.pressed) {
+                DEBUG_LOG("CKC_TF_ALL pressed\n");
+                layer_clear();
             }
             return false;
         case CKC_MOFN:
